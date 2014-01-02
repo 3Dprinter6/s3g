@@ -3,6 +3,7 @@
 from __future__ import absolute_import
 
 import time
+import threading
 import logging
 
 from . import AbstractWriter
@@ -14,11 +15,13 @@ class StreamWriter(AbstractWriter):
     to a bot at the end of a wire.
     """
 
-    def __init__(self, file, condition):
+    def __init__(self, file, condition = None):
         """ Initialize a new StreamWriter object
 
         @param string file File object to interact with
         """
+        if condition is None:
+          condition = threading.Condition()
         super(StreamWriter, self).__init__(file, condition)
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('{"event":"begin_writing_to_stream", "stream":%s}',
